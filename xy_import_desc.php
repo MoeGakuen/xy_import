@@ -1,0 +1,28 @@
+<?php if (!defined('SYSTEM_ROOT')) { die('Insufficient Permissions'); } 
+return array(
+	'plugin' => array(
+		'name'        => 'BDUSS批量导入',
+		'version'     => '1.0 beta',
+		'description' => '批量导入BDUSS，养小号再也不麻烦，爆吧者福音。',
+		'onsale'      =>  false,
+		'url'         => 'http://tb.hydd.cc',
+		'for'         => '3.8+',
+        'forphp'      => '5.3'
+	),
+	'author' => array(
+		'author'      => '学园',
+		'email'       => 'i@hydd.cc',
+		'url'         => 'http://www.xybk.cc'
+	),
+	'view'   => array(
+		'setting'     => true,
+		'show'        => false,
+		'vip'         => false,
+		'private'     => false,
+		'public'      => false,
+		'update'      => false,
+	),
+	'page'   => array(
+		'ajax'
+	)
+);
