@@ -1,10 +1,11 @@
 <?php
+ini_set("max_execution_time", 300);
 if(ROLE != 'admin') die('权限不足');
 global $m;
 //参数替换
 function getgs($gs){
 	$data = str_ireplace('{百度ID}','(.*)',$gs);
-	$data = str_ireplace('{百度BDUSS}','([0-9a-zA-Z-]+)',$data);
+	$data = str_ireplace('{百度BDUSS}','([0-9a-zA-Z\-\~]+)',$data);
 	return $data; 
 }
 //导入BDUSS
@@ -15,6 +16,7 @@ if (isset($_GET['new'])) {
   $arr = explode(PHP_EOL,$import_str);
   $total = count($arr);
   $gs = option::get('xy_import_gs');
+  $refresh = option::get('xy_import_refresh');
   $hs=$cf=$ok=$err=$up=$sx=0;
   for($i=0;$i<$total;$i++){
 	preg_match('/'.getgs($gs).'/',$arr[$i], $re);
@@ -24,7 +26,7 @@ if (isset($_GET['new'])) {
 	  if ($x['bduss'] > 0) {
 		$cf++;
 	  } else {
-		$baidu_name = sqladds(getBaiduId($re[2]));
+		$baidu_name = option::get('xy_import_check') == 1 ? sqladds(getBaiduId($re[2])) : sqladds($re[1]);
 		if(empty($baidu_name)){
 		  $sx++;
 		} else {
@@ -40,7 +42,13 @@ if (isset($_GET['new'])) {
 	  }
 	}
   }
-  $ok > 0 ? $info = ',"status":"success"' : $info='';
+  if($refresh == 1 && $ok > 0) {
+	  $info = ',"status":"refresh"';
+  }elseif($ok > 0) {
+	  $info = ',"status":"success"';
+  } else {
+	  $info='';
+  }
   die('{"info":"批量导入完成。<br/><br/>匹配行数：['.$hs.']<br/>导入成功：['.$ok.']<br/>导入失败：['.$err.']<br/>更新记录：['.$up.']<br/>失效数量：['.$sx.']<br/>已存在数：['.$cf.']<br/>"'.$info.'}');
 }
 //基本设置
@@ -52,9 +60,23 @@ if (isset($_GET['set'])) {
 		} elseif (!stristr($gs,'{百度BDUSS}')) {
 			die('{"type":"error","emsg":"缺少参数 <strong>{百度BDUSS}</strong> ！"}');
 		}
+		$check = !empty($_POST['check']) ? 1 : 0;
+		$refresh = !empty($_POST['refresh']) ? 1 : 0;
 		option::set('xy_import_gs',$_POST['gs']);
-		die('{"type":"success","regular":"'.getgs($_POST['gs']).'"}');
+		option::set('xy_import_check',$_POST['check']);
+		option::set('xy_import_refresh',$_POST['refresh']);
+		die('{"type":"success","regular":"'.urlencode(getgs($_POST['gs'])).'"}');
 	} else {
 		die('{"type":"error","emsg":"导入格式不能为空！"}');
 	}
+}
+//删除所有绑定
+if (isset($_GET['delete'])) {
+  $s = $m->query("SELECT * FROM `".DB_NAME."`.`".DB_PREFIX."baiduid` where `uid` = '".UID."';");
+  while ($x = $m->fetch_array($s)) {
+	$t = $m->once_fetch_array("SELECT `t` FROM `".DB_NAME."`.`".DB_PREFIX."users` where `id` = '".UID."';");
+	$m->query("DELETE FROM `".DB_NAME."`.`".DB_PREFIX.$t['t']."` WHERE `uid` = '".UID."' and `pid` = '".$x['id']."';");
+	$m->query("DELETE FROM `".DB_NAME."`.`".DB_PREFIX."baiduid` WHERE `uid` = '".UID."' and `id` = '".$x['id']."';");
+  }
+  echo '<script language="JavaScript">alert("删除所有绑定完成。");location.href="index.php?mod=baiduid";</script>';
 }
