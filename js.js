@@ -34,7 +34,7 @@
 
   function ShowSetResponse(data) {
 	if (data.type == "success") {
-	  $("#zzyl").val(data.regular);
+	  $("#zzyl").val(decodeURIComponent(data.regular));
 	  var dialog = new BootstrapDialog({
 		title: '提示',
 		message: '设置已成功保存！',
@@ -70,11 +70,11 @@
   }
 
   function showNewResponse(data) {
-	if(data.status == 'success') {
+	if(data.status == "refresh") {
 	  window.location.href = "http://"+window.location.host+"/setting.php?mod=showtb&ref";
 	  var dialog = new BootstrapDialog({
 		title: '提示',
-		message: data.info+"<br/><br/>正在刷新贴吧列表，请稍后...<br/>",
+		message: data.info+"<br/><br/>正在刷新贴吧列表，时间可能较长，请稍后...<br/>",
 		closable: false,
 		type: 'type-primary'
 	  });
@@ -91,6 +91,7 @@
 		  cssClass: 'btn-primary',
 		  action: function (dialogRef) {
 			$.each(BootstrapDialog.dialogs, function(id, dialog){dialog.close();});
+			if(data.status == 'success') {window.location.href = "http://"+window.location.host+"/index.php?mod=baiduid";}
 		  }
 		}]
 	  });
