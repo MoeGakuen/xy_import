@@ -1,9 +1,9 @@
 <?php if (!defined('SYSTEM_ROOT')) { die('Insufficient Permissions'); } 
 return array(
 	'plugin' => array(
-		'name'        => 'BDUSS批量导入',
-		'version'     => '1.0 beta',
-		'description' => '批量导入BDUSS，养小号再也不麻烦，爆吧者福音。',
+		'name'        => '批量导入BDUSS',
+		'version'     => '1.1',
+		'description' => '养小号再也不麻烦，小号再多也不怕！',
 		'onsale'      =>  false,
 		'url'         => 'http://tb.hydd.cc',
 		'for'         => '3.8+',
