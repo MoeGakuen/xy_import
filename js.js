@@ -24,7 +24,7 @@
 	  var dialog = new BootstrapDialog({
 		closable: false,
 		title: '提示',
-		message: '正在提交导入数据，请稍候...<br/><br/>正在检测BDUSS是否有效，提交时间可能较长请耐心等待...'
+		message: '正在提交导入数据，请稍候...<br/><br/>提交时间可能较长请耐心等待...'
 	  });
 	  dialog.realize();
 	  dialog.open();
@@ -77,6 +77,22 @@
 		message: data.info+"<br/><br/>正在刷新贴吧列表，时间可能较长，请稍后...<br/>",
 		closable: false,
 		type: 'type-primary'
+	  });
+	  dialog.realize();
+	  dialog.open();
+	} else if(data.type == "error") {
+	  var dialog = new BootstrapDialog({
+		title: '错误',
+		message: data.emsg,
+		type: 'type-danger',
+		closable: false,
+		buttons: [{
+		  label: '关闭',
+		  cssClass: 'btn-danger',
+		  action: function (dialogRef) {
+			$.each(BootstrapDialog.dialogs, function(id, dialog){dialog.close();});
+		  }
+		}]
 	  });
 	  dialog.realize();
 	  dialog.open();
