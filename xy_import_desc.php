@@ -2,7 +2,7 @@
 return array(
 	'plugin' => array(
 		'name'        => '批量导入BDUSS',
-		'version'     => '1.1',
+		'version'     => '1.2',
 		'description' => '养小号再也不麻烦，小号再多也不怕！',
 		'onsale'      =>  false,
 		'url'         => 'http://tb.hydd.cc',
